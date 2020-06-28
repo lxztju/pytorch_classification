@@ -11,6 +11,7 @@
 * 使用tta测试时增强进行预测
 * 添加label smooth的pytorch实现（标签平滑）
 * 添加使用cnn提取特征，并使用SVM，RF，MLP，KNN等分类器进行分类。
+* 更新添加了模型蒸馏的的训练方法
 
 ## 运行环境
 * python3.7
