@@ -46,7 +46,7 @@ MODEL_NAMES = {
 }
 
 
-BASE = home + '/data/'
+BASE = home + '/Documents/workplace/Git/pytorch_classification/data/'
 #数据集的存放位置
 TRAIN_LABEL_DIR =BASE + 'train.txt'
 VAL_LABEL_DIR = BASE + 'val.txt'

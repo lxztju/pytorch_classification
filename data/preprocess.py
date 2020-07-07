@@ -18,7 +18,7 @@ if __name__ == '__main__':
     txtpath = cfg.BASE
     # print(labels)
     for index, label in enumerate(labels):
-        imglist = glob.glob(os.path.join(traindata_path,label, '*.jpg'))
+        imglist = glob.glob(os.path.join(traindata_path,label, '*.*'))
         # print(imglist)
         with open(txtpath + 'train.txt', 'a')as f:
             for img in imglist:
@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 f.write('\n')
         # print(imglist)
 
-    imglist = glob.glob(os.path.join(valdata_path, '*.jpg'))
+    imglist = glob.glob(os.path.join(valdata_path, '*.*.*'))
     with open(txtpath + 'val.txt', 'a')as f:
         for img in imglist:
             f.write(img)
