@@ -98,6 +98,8 @@ def train_kd(model, teacher_model, optimizer, loss_fn_kd, T, alpah):
         ##在pytorch0.4之后将Variable 与tensor进行合并，所以这里不需要进行Variable封装
         if torch.cuda.is_available():
             images, labels = images.cuda(), labels.cuda()
+            teacher_model = teacher_model.cuda()
+            model = model.cuda()
         teacher_outputs = teacher_model(images)
         out = model(images)
         loss = loss_fn_kd(out, labels, teacher_outputs,T, alpha)
@@ -119,7 +121,7 @@ def train_kd(model, teacher_model, optimizer, loss_fn_kd, T, alpah):
  
 
 if __name__ == '__main__':
-    save_folder ='./weights/epoch_40.pth'
+    save_folder ='./weights/epoch_30.pth'
     teacher_model =  load_checkpoint(save_folder)
 
 
@@ -127,9 +129,9 @@ if __name__ == '__main__':
     student_model = cfg.MODEL_NAMES[student_model_name](num_classes=cfg.NUM_CLASSES)
 
     ##定义优化器与损失函数
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=cfg.LR)
+    # optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=cfg.LR)
     # optimizer = optim.Adam(model.parameters(), lr=cfg.LR)
-    optimizer = optim.SGD(model.parameters(), lr=cfg.LR,
+    optimizer = optim.SGD(student_model.parameters(), lr=cfg.LR,
                         momentum=cfg.MOMENTUM, weight_decay=cfg.WEIGHT_DECAY)
 
     T = 10
