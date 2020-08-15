@@ -47,9 +47,11 @@ MODEL_NAMES = {
 
 
 BASE = home + '/data/'
+
 #数据集的存放位置
-TRAIN_LABEL_DIR =BASE + 'train.txt'
+TRAIN_LABEL_DIR =BASE + 'train.txt'     
 VAL_LABEL_DIR = BASE + 'val.txt'
+TEST_LABEL_DIR = BASE + 'test.txt'
 
 
 ##训练完成，权重文件的保存路径,默认保存在trained_model下

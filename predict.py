@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     trained_model = cfg.TRAINED_MODEL
     model_name = cfg.model_name
-    with open(cfg.VAL_LABEL_DIR,  'r')as f:
+    with open(cfg.TEST_LABEL_DIR,  'r')as f:
         imgs = f.readlines()
 
     # _id, pred_list = tta_predict(trained_model)

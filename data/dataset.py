@@ -10,7 +10,7 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import os
 from PIL import Image
-from data import get_train_transform
+from data import get_train_transform, get_test_transform
 
 import sys 
 sys.path.append("..") 
@@ -27,7 +27,7 @@ batch_size = cfg.BATCH_SIZE
 #cfg为config文件，保存几个方便修改的参数
 
 class  SelfCustomDataset(Dataset):
-    def __init__(self, label_file, input_size=224):
+    def __init__(self, label_file, imageset):
         '''
         img_dir: 图片路径：img_dir + img_name.jpg构成图片的完整路径      
         '''
@@ -36,11 +36,13 @@ class  SelfCustomDataset(Dataset):
             #label_file的格式， （label_file image_label)
             self.imgs = list(map(lambda line: line.strip().split(' '), f))
       # 相关预处理的初始化
-      #  self.transforms=transform
+      #   self.transforms=transform
         self.img_aug=True
-
-        self.transform= get_train_transform(size=cfg.INPUT_SIZE)
-        #self.eraser = get_random_eraser( s_h=0.1, pixel_level=True)
+        if imageset == 'train':
+            self.transform= get_train_transform(size=cfg.INPUT_SIZE)
+        else:
+            self.transform = get_test_transform(size = cfg.INPUT_SIZE)
+        self.eraser = get_random_eraser( s_h=0.1, pixel_level=True)
         self.input_size = cfg.INPUT_SIZE
 
     def __getitem__(self, index):
@@ -68,8 +70,13 @@ class  SelfCustomDataset(Dataset):
 #设置多线程，来相对提升数据提取的速度
 
 train_label_dir = cfg.TRAIN_LABEL_DIR
-train_datasets = SelfCustomDataset(train_label_dir)
-train_dataloader = torch.utils.data.DataLoader(train_datasets, batch_size=batch_size, shuffle=True, num_workers=4)
+train_datasets = SelfCustomDataset(train_label_dir, imageset='train')
+train_dataloader = torch.utils.data.DataLoader(train_datasets, batch_size=batch_size, shuffle=True, num_workers=2)
+
+val_label_dir = cfg.VAL_LABEL_DIR
+val_datasets = SelfCustomDataset(val_label_dir, imageset='test')
+val_dataloader = torch.utils.data.DataLoader(val_datasets, batch_size=batch_size, shuffle=True, num_workers=2)
+
 
 ##进行数据提取函数的测试
 if __name__ =="__main__":

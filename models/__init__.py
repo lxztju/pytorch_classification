@@ -34,7 +34,7 @@ model_urls = {
     'efficientnet-b6': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b6-c76e70fd.pth',
     'efficientnet-b7': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b7-dcc49843.pth',
 }
-
+from .vision import *
 from .resnext_wsl import *
 from .efficientnet_pytorch import *
 from .build_model import *
