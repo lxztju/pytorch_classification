@@ -12,6 +12,9 @@
 * 添加label smooth的pytorch实现（标签平滑）
 * 添加使用cnn提取特征，并使用SVM，RF，MLP，KNN等分类器进行分类。
 * 更新添加了模型蒸馏的的训练方法
+* 添加中间层可视化
+* 更新模型部署(采用flask+Redis的方法)
+* c++ libtorch进行模型部署的简单demo
 
 ## 运行环境
 * python3.7

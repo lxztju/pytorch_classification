@@ -24,8 +24,7 @@ WEIGHT_DECAY = 5e-4
 MOMENTUM = 0.9
 # 初始学习率
 LR = 1e-3
-# 训练好模型的保存位置
-SAVE_FOLDER = './weights'
+
 
 # 采用的模型名称
 model_name = 'resnext101_32x32d'
@@ -47,6 +46,10 @@ MODEL_NAMES = {
 
 
 BASE = home + '/data/'
+
+
+# 训练好模型的保存位置
+SAVE_FOLDER = BASE + 'weights/'
 
 #数据集的存放位置
 TRAIN_LABEL_DIR =BASE + 'train.txt'     
