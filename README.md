@@ -1,5 +1,7 @@
-# pytorch_classification
+利用pytorch实现图像分类，其中包含的densenet，resnext，mobilenet，efficientnet等图像分类网络，可以根据需要再行利用torchvision扩展其他的分类算法
 
+##### github代码地址：[https://github.com/lxztju/pytorch_classification](https://github.com/lxztju/pytorch_classification)
+如果有用欢迎star
 利用pytorch实现图像分类，其中包含的densenet，resnext，mobilenet，efficientnet, resnet等图像分类网络，可以根据需要再行利用torchvision扩展其他的分类算法
 
 ## 实现功能
@@ -7,14 +9,12 @@
 * 包含带有warmup的cosine学习率调整
 * warmup的step学习率优调整
 * 多模型融合预测，加权与投票融合
-* 利用flask实现模型云端api部署
+* 利用flask + redis实现模型云端api部署
+* c++ libtorch的模型部署
 * 使用tta测试时增强进行预测
 * 添加label smooth的pytorch实现（标签平滑）
 * 添加使用cnn提取特征，并使用SVM，RF，MLP，KNN等分类器进行分类。
-* 更新添加了模型蒸馏的的训练方法
-* 添加中间层可视化
-* 更新模型部署(采用flask+Redis的方法)
-* c++ libtorch进行模型部署的简单demo
+* 可视化特征层
 
 ## 运行环境
 * python3.7
@@ -114,10 +114,23 @@ SAVE_FOLDER = './weights'
 model_name = 'resnext101_32x32d'
 ```
 
-
+1. 直接利用训练数据集进行训练
 ```shell
 python train.py
 ```
+
+2. 在训练的时候使用验证集，得到验证集合的准确率
+```shell
+python train_val.py
+```
+
+3. 使用知识蒸馏的方案来训练网络。
+```shell
+python train_kd.py
+```
+
+
+
 
 ### 预测
 在cfg.py中`TRAINED_MODEL`参数修改为指定的权重文件存储位置,在predict文件中可以选定是否使用tta
@@ -137,18 +150,15 @@ python ./kaggle_vote.py "./samples/method*.csv" "./samples/vote.csv"
 
 
 
-### cnn + svm
+### cnn + 传统的ML模型
 
+代码存在于`cnn_ml.py`中, 利用训练好的cnn特征提取器，将得到的特征保存为pkl文件，然后训练svm分类器， 并将分类器模型保存，然后读取预测。
 
-代码存在于`cnn_ml.py`中, 利用训练好的cnn特征提取器，将得到的特征保存为pkl文件，然后训练svm分类器， 并将分类器模型保存，然后读取预测
+其中在使用过程中，需要根据不同的网络模型来确定最后一层的模型尺度，或者自己裁剪得到的CNN特征向量。
+
 
 主要需要修改的就是根据不同模型的输出特征向量的大小在`cnn_ml.py`中修改`NB_features`对应的大小
 
-### flask云端部署
+### 部署
 
-将训练存储好的权重文件，存储在`flask_deployment`文件夹中
-
-然后修改`server.py`中路径运行即可
-利用`client.py`进行调用
-
-
+代码存储在`deplyment`文件夹中，可以看相对应的部署README.md文件
