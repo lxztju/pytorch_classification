@@ -42,7 +42,7 @@ class  SelfCustomDataset(Dataset):
             self.transform= get_train_transform(size=cfg.INPUT_SIZE)
         else:
             self.transform = get_test_transform(size = cfg.INPUT_SIZE)
-        self.eraser = get_random_eraser( s_h=0.1, pixel_level=True)
+        # self.eraser = get_random_eraser( s_h=0.1, pixel_level=True)
         self.input_size = cfg.INPUT_SIZE
 
     def __getitem__(self, index):
