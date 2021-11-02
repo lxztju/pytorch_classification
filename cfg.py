@@ -26,6 +26,7 @@ MOMENTUM = 0.9
 LR = 1e-3
 
 
+
 # 采用的模型名称
 model_name = 'resnext101_32x32d'
 
