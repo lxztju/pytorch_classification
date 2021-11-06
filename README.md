@@ -162,3 +162,11 @@ python ./kaggle_vote.py "./samples/method*.csv" "./samples/vote.csv"
 ### 部署
 
 代码存储在`deplyment`文件夹中，可以看相对应的部署README.md文件
+
+
+
+### 问题交流
+
+代码问题可以扫码“小哲AI”公众号，与我交流。
+
+![公众号二维码](https://xiaozheai111.oss-cn-beijing.aliyuncs.com/wechatimgs/公众号二维码.jpg)
