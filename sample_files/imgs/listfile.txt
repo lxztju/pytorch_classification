@@ -1,0 +1,12 @@
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/0.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/1.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/2.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/3.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/4.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/cat/5.jpg	0
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/0.jpg	1
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/1.jpg	1
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/2.jpg	1
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/3.jpg	1
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/4.jpg	1
+/home/lxztju/pytorch_classification/sample_files/imgs/dog/5.jpg	1
