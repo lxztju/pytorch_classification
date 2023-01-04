@@ -66,7 +66,7 @@ def train(rank, local_rank, device, args):
     
     criterion = torch.nn.CrossEntropyLoss().to(device)
     
-    model = ClsModel(args.model_name, args.num_classes, args.dropout, args.is_pretrained)
+    model = ClsModel(args.model_name, args.num_classes, args.is_pretrained)
     print(model.base_model)
     model.to(device)
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
@@ -88,7 +88,7 @@ def train(rank, local_rank, device, args):
         if local_rank != -1:
             train_sampler.set_epoch(epoch)
         model.train()
-        for step, (img, target) in enumerate(train_loader): 
+        for step, (img, target, _) in enumerate(train_loader): 
             img = img.to(device)
             target = target.to(device)
 
@@ -110,7 +110,7 @@ def train(rank, local_rank, device, args):
             with torch.no_grad():
                 preds, labels = [], []
                 eval_pbar = tqdm.tqdm(val_loader, desc=f'epoch {epoch + 1} / {args.epochs} evaluating', position=1, disable=False if rank in [-1, 0] else True)
-                for step, (img, target) in enumerate(eval_pbar):
+                for step, (img, target, _) in enumerate(eval_pbar):
                     img = img.to(device)
                     target = target.to(device)
 
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     rank = int(os.environ["RANK"])
     local_rank = int(os.environ["LOCAL_RANK"])
     device = torch.device("cuda", local_rank)
-
+    print(args.train_list)
     args.world_size = int(os.environ["WORLD_SIZE"])
     
     print(f"[init] == local rank: {local_rank}, global rank: {rank} == devices: {device}")

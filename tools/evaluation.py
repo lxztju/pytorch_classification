@@ -47,7 +47,7 @@ def evaluate(rank, local_rank, device, args):
     print('val_loader is ready!!!')
 
         
-    model = ClsModel(args.model_name, args.num_classes, args.dropout, args.is_pretrained)
+    model = ClsModel(args.model_name, args.num_classes, args.is_pretrained)
 
 
     if args.tune_from and os.path.exists(args.tune_from):
@@ -70,7 +70,7 @@ def evaluate(rank, local_rank, device, args):
     with torch.no_grad():
         preds, labels, scores = [], [], []
         eval_pbar = tqdm.tqdm(val_loader, desc=f'evaluating', position=1, disable=False if rank in [-1, 0] else True)
-        for step, (img, target) in enumerate(eval_pbar):
+        for step, (img, target, _) in enumerate(eval_pbar):
             img = img.to(device)
             target = target.to(device)
 
