@@ -1,5 +1,5 @@
 from logging import raiseExceptions
-import torch 
+import torch
 import torch.nn as nn
 import torchvision
 
@@ -28,7 +28,7 @@ class ClsModel(nn.Module):
             raise ValueError('Please confirm the name of model')
 
         if self.is_pretrained:
-            self.base_model = getattr(torchvision.models, self.model_name)(ModelWeights[self.model_name])
+            self.base_model = getattr(torchvision.models, self.model_name)(weights=ModelWeights[self.model_name])
         else:
             self.base_model = getattr(torchvision.models, self.model_name)()
 
@@ -59,11 +59,11 @@ class ClsModel(nn.Module):
 #         x = self.new_fc(x)
         return x
 
-    
+
 if __name__ == '__main__':
     model_name = 'resnet50'
     num_classes = 2
     is_pretrained = False
-    
+
     clsmodel = ClsModel(model_name, num_classes, 0, is_pretrained)
     print(clsmodel)
