@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
 
 from utils import  init_logger, torch_distributed_zero_first, AverageMeter, distributed_concat
 from utils import  get_scheduler, parser
-        
+
 from dataset import ClsDataset, train_transform, val_transform
 from cls_models import ClsModel
 
@@ -29,7 +29,7 @@ from cls_models import ClsModel
 def train(rank, local_rank, device, args):
     check_rootfolders()
     logger = init_logger(log_file=args.output + f'/log', rank=rank)
-        
+
     with torch_distributed_zero_first(rank):
         val_dataset = ClsDataset(
             list_file = args.val_list,
@@ -40,10 +40,10 @@ def train(rank, local_rank, device, args):
             list_file = args.train_list,
             transform = train_transform(size=args.input_size)
         )
-        
+
         logger.info(f"Num train examples = {len(train_dataset)}")
         logger.info(f"Num val examples = {len(val_dataset)}")
-        
+
 
     val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset, rank=rank,shuffle=False)
 
@@ -53,19 +53,17 @@ def train(rank, local_rank, device, args):
         sampler=val_sampler,
         num_workers=args.workers, pin_memory=True)
 
-    print('val_loader is ready!!!')
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset, rank=rank,shuffle=True)
     train_loader = torch.utils.data.DataLoader(train_dataset,
-        batch_size=args.batch_size, 
+        batch_size=args.batch_size,
         sampler=train_sampler,
         num_workers=args.workers, pin_memory=True,
         drop_last=True)
 
-    print('train_loader is ready!!!')
-    
+
     criterion = torch.nn.CrossEntropyLoss().to(device)
-    
+
     model = ClsModel(args.model_name, args.num_classes, args.is_pretrained)
     print(model.base_model)
     model.to(device)
@@ -76,19 +74,19 @@ def train(rank, local_rank, device, args):
 
 
     cudnn.benchmark = True
-        
+
     for k, v in sorted(vars(args).items()):
         logger.info(f'{k} = {v}')
-    
+
     epoch = args.start_epoch
     model.zero_grad()
-    eval_results, best_result = [], 0
+    eval_results = []
     for epoch in range(args.start_epoch, args.epochs):
         losses = AverageMeter()
         if local_rank != -1:
             train_sampler.set_epoch(epoch)
         model.train()
-        for step, (img, target, _) in enumerate(train_loader): 
+        for step, (img, target, _) in enumerate(train_loader):
             img = img.to(device)
             target = target.to(device)
 
@@ -102,8 +100,8 @@ def train(rank, local_rank, device, args):
             optimizer.step()
             optimizer.zero_grad()
             scheduler.step()
-            
-        
+
+
         # evaluate on validation set
         if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
             model.eval()
@@ -129,22 +127,17 @@ def train(rank, local_rank, device, args):
 
                 labels = labels.cpu().numpy()
                 predicts = predicts.cpu().numpy()
-                
+
                 if rank == 0:
                     eval_result = (np.sum(labels == predicts)) / len(labels)
                     eval_results.append(eval_result)
                     logger.info(f'precision = {eval_result:.4f}' )
-                    if eval_result >= best_result:
-                        best_result = eval_result
-                        save_path = os.path.join(args.output, f'precision = {eval_result:.4f}_num={epoch}')  
-                        os.makedirs(save_path, exist_ok=True)
-                        model_to_save = (model.module if hasattr(model, "module") else model)
-                        torch.save(model_to_save.state_dict(), os.path.join(save_path, 'ckpt.pth.tar'))
+                    save_path = os.path.join(args.output, f'precision_{eval_result:.4f}_num_{epoch+1}')
+                    os.makedirs(save_path, exist_ok=True)
+                    model_to_save = (model.module if hasattr(model, "module") else model)
+                    torch.save(model_to_save.state_dict(), os.path.join(save_path, f'epoch_{epoch+1}.pth'))
 
-            model_to_save = (model.module if hasattr(model, "module") else model)
-            torch.save(model_to_save.state_dict(), os.path.join(args.output, f'epoch_{epoch}.pth'))   
-            
-            
+
 def check_rootfolders():
     """Create log and model folder"""
     folders_util = [args.output]
@@ -166,10 +159,10 @@ def distributed_init(backend="gloo", port=None):
         world_size=world_size,
         rank=rank,
     )
-            
-            
+
+
 if __name__ == '__main__':
-    
+
     args = parser.parse_args()
     distributed_init(backend = args.backend)
     rank = int(os.environ["RANK"])
@@ -177,7 +170,7 @@ if __name__ == '__main__':
     device = torch.device("cuda", local_rank)
     print(args.train_list)
     args.world_size = int(os.environ["WORLD_SIZE"])
-    
+
     print(f"[init] == local rank: {local_rank}, global rank: {rank} == devices: {device}")
-    
+
     train(rank, local_rank, device, args)
